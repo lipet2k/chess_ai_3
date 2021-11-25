@@ -10,9 +10,7 @@ class Agent:
     def getValue(self, outcome):
 
         if outcome is None:
-            player_1 = self.getColor(chess.WHITE)
-            player_2 = self.getColor(chess.BLACK)
-            return player_1 - player_2
+            return self.getColor(self.color)
         else:
             winner = outcome.winner
             if winner is None:
@@ -38,21 +36,44 @@ class MiniMaxAgent(Agent):
         super().__init__(board)
 
     def bestAction(self, depth):
-        outcome = self.board.outcome()
-        if depth == 0 or outcome != None:
-            return (self.getValue(outcome) * self.color, None)
-        max = -math.inf
-        best_moves = []
-        for move in self.board.legal_moves:
-            self.board.push(move)
-            score = -self.bestAction(depth - 1)[0]
-            self.board.pop()
-            if (score > max):
-                best_moves = [move]
-                max = score
-            elif score == max:
-                best_moves.append(move)
-        return max, random.choice(best_moves)
+
+        def maxAction(depth):
+            outcome = self.board.outcome()
+            if outcome != None or depth == 0:
+                return (self.getValue(outcome), None)
+            max = -math.inf
+            best_moves = []
+            for move in self.board.legal_moves:
+                self.board.push(move)
+                score = maxAction(depth - 1)[0]
+                self.board.pop()
+                if score > max:
+                    best_moves = [move]
+                    max = score
+                elif score == max:
+                    best_moves.append(move)
+            return max, random.choice(best_moves)
+            
+        return maxAction(depth)
+
+
+
+    # def bestAction(self, depth):
+    #     outcome = self.board.outcome()
+    #     if depth == 0 or outcome != None:
+    #         return (self.getValue(outcome) * self.color, None)
+    #     max = -math.inf
+    #     best_moves = []
+    #     for move in self.board.legal_moves:
+    #         self.board.push(move)
+    #         score = -self.bestAction(depth - 1)[0]
+    #         self.board.pop()
+    #         if (score > max):
+    #             best_moves = [move]
+    #             max = score
+    #         elif score == max:
+    #             best_moves.append(move)
+    #     return max, random.choice(best_moves)
 
 
 
