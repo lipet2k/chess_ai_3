@@ -1,0 +1,22 @@
+{% extends 'templates/base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    {{ new_image }}
+</div>
+<div class="ui">
+    <form action="/next" method='GET'>
+        <button name='opt_button' value='next'>Next</button>
+    </form>
+
+    <form action="/reset" method='GET'>
+        <button name='opt_button' value='reset'>Reset</button>
+    </form>
+</div>
+
+<h1>{{ value }}</h1>
+{% endblock %}
