@@ -36,12 +36,13 @@ def play(depth):
             return "Black wins!"
     else:
         board.push(best_move)
-        return Board(Markup(renderBoard()), best_value)
+        return Board(renderBoard(), best_value)
 
 class Initialize(Resource):
     @marshal_with(board_fields)
     def get(self):
         try:
+            # thisIs = type(Board(Markup(renderBoard()), 0))
             return Board(renderBoard(), 0)
         except:
             abort(404, message="Fail to initialize.")
@@ -59,13 +60,23 @@ class Next(Resource):
     @marshal_with(board_fields)
     def get(self):
         try:
-            return play(3)
+            return play(2)
         except:
-            abort(404, message="Fail to get next move.")            
+            abort(404, message="Fail to get next move.")
+
+class Previous(Resource):
+    @marshal_with(board_fields)
+    def get(self):
+        try:
+            board.pop()
+            return Board(Markup(renderBoard()), 0)
+        except:
+            abort(404, message="Fail to undo move.")            
 
 api.add_resource(Next, '/next')
 api.add_resource(Reset, '/reset')
 api.add_resource(Initialize, '/')
+api.add_resource(Previous, '/previous')
 
 if __name__ == "__main__":
     app.run(debug=True)
