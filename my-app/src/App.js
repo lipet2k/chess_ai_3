@@ -17,6 +17,10 @@ class App extends React.Component {
     this.initialize = this.initialize.bind(this);
     this.getPrevious = this.getPrevious.bind(this);
   }
+  
+  // componentDidMount() {
+  //   this.initialize;
+  // }
 
 
   async getNext() {
