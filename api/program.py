@@ -13,7 +13,7 @@ class EvaluationFunctions:
                 len(self.board.pieces(2, color)) + len(self.board.pieces(3, color))) * 3 + len(
             self.board.pieces(4, color)) * 5 + len(self.board.pieces(5, color)) * 9
 
-    # returns sum of piece value * #(ranks away from their side)
+    # returns sum of (piece value * #(ranks away from their side))
     def pushValuablePeices(self, color):
         knights = self.board.pieces(chess.KNIGHT, color)
         bishops = self.board.pieces(chess.BISHOP, color)
@@ -25,6 +25,7 @@ class EvaluationFunctions:
 
         return value
 
+    # return the number of total attacks made by this color
     def numAttacks(self, color):
         knights = self.board.pieces(chess.KNIGHT, color)
         bishops = self.board.pieces(chess.BISHOP, color)
@@ -35,6 +36,7 @@ class EvaluationFunctions:
         numAttacks = self.numAttacksHelper(knights, bishops, rooks, queens, pawns, 1, 1, 1, 1, 1)
         return numAttacks
 
+    # return the push pieces evaluation function times some modifier plus the num attacks evaluation function
     def pushValuablePeicesAndMakeAttacks(self, color):
         knights = self.board.pieces(chess.KNIGHT, color)
         bishops = self.board.pieces(chess.BISHOP, color)
@@ -48,6 +50,7 @@ class EvaluationFunctions:
         value = (pushPiecesValue * .2) + (numAttacks)
         return value
 
+    # given the lists of pieces, for each piece add its value times its current rank to the score
     def pushPiecesHelper(self, color, knights, bishops, rooks, queens, pawns):
         value = 0
         multiplier = 1
@@ -73,7 +76,7 @@ class EvaluationFunctions:
 
         return value
 
-    # returns the number of attacks being made by the given list of knight squares times the modifier for that piece
+    # for each list of pieces, add the number of squares being attacked by those pieces times the modifier to the score
     # allows it to value pawn attacks greater than queen for example
     def numAttacksHelper(self, knights, bishops, rooks, queens, pawns, knightMod, bishMod, rookMod, queenMod, pawnMod):
         numAttacks = 0
