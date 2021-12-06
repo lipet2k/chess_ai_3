@@ -214,3 +214,6 @@ class GeneralizedFeatures(Agent):
         connected_pawns = 0
 
         # TODO
+
+    def piece_pins(self, color):
+        pass
