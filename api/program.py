@@ -3,6 +3,100 @@ import chess
 import random
 
 
+class EvaluationFunctions:
+    def __init__(self, board):
+        self.board = board
+
+    # returns classic- number of pieces * their point value {1,3,5,9}
+    def pieceValues(self, color):
+        return len(self.board.pieces(1, color)) + (
+                len(self.board.pieces(2, color)) + len(self.board.pieces(3, color))) * 3 + len(
+            self.board.pieces(4, color)) * 5 + len(self.board.pieces(5, color)) * 9
+
+    # returns sum of (piece value * #(ranks away from their side))
+    def pushValuablePeices(self, color):
+        knights = self.board.pieces(chess.KNIGHT, color)
+        bishops = self.board.pieces(chess.BISHOP, color)
+        rooks = self.board.pieces(chess.ROOK, color)
+        queens = self.board.pieces(chess.QUEEN, color)
+        pawns = self.board.pieces(chess.PAWN, color)
+
+        value = self.pushPiecesHelper(color, knights, bishops, rooks, queens, pawns)
+
+        return value
+
+    # return the number of total attacks made by this color
+    def numAttacks(self, color):
+        knights = self.board.pieces(chess.KNIGHT, color)
+        bishops = self.board.pieces(chess.BISHOP, color)
+        rooks = self.board.pieces(chess.ROOK, color)
+        queens = self.board.pieces(chess.QUEEN, color)
+        pawns = self.board.pieces(chess.PAWN, color)
+
+        numAttacks = self.numAttacksHelper(knights, bishops, rooks, queens, pawns, 1, 1, 1, 1, 1)
+        return numAttacks
+
+    # return the push pieces evaluation function times some modifier plus the num attacks evaluation function
+    def pushValuablePeicesAndMakeAttacks(self, color):
+        knights = self.board.pieces(chess.KNIGHT, color)
+        bishops = self.board.pieces(chess.BISHOP, color)
+        rooks = self.board.pieces(chess.ROOK, color)
+        queens = self.board.pieces(chess.QUEEN, color)
+        pawns = self.board.pieces(chess.PAWN, color)
+
+        pushPiecesValue = self.pushPiecesHelper(color, knights, bishops, rooks, queens, pawns)
+        numAttacks = self.numAttacksHelper(knights, bishops, rooks, queens, pawns, 1, 1, 1, 1, 1)
+
+        value = (pushPiecesValue * .2) + (numAttacks)
+        return value
+
+    # given the lists of pieces, for each piece add its value times its current rank to the score
+    def pushPiecesHelper(self, color, knights, bishops, rooks, queens, pawns):
+        value = 0
+        multiplier = 1
+        rankdiff = 7
+
+        if color == chess.WHITE:
+            multiplier = 1
+            rankdiff = 1
+        elif color == chess.BLACK:
+            multiplier = -1
+            rankdiff = 8
+
+        for square in knights:
+            value += ((multiplier * chess.square_rank(square)) + rankdiff) * 3
+        for square in bishops:
+            value += ((multiplier * chess.square_rank(square)) + rankdiff) * 3
+        for square in rooks:
+            value += ((multiplier * chess.square_rank(square)) + rankdiff) * 5
+        for square in queens:
+            value += ((multiplier * chess.square_rank(square)) + rankdiff) * 9
+        for square in pawns:
+            value += ((multiplier * chess.square_rank(square)) + rankdiff) * 1
+
+        return value
+
+    # for each list of pieces, add the number of squares being attacked by those pieces times the modifier to the score
+    # allows it to value pawn attacks greater than queen for example
+    def numAttacksHelper(self, knights, bishops, rooks, queens, pawns, knightMod, bishMod, rookMod, queenMod, pawnMod):
+        numAttacks = 0
+
+        # for each piece of type x, return the number of squares they are attacking mult by the corresponding mod
+        for square in knights:
+            numAttacks += len(self.board.attacks(square)) * knightMod
+        for square in bishops:
+            numAttacks += len(self.board.attacks(square)) * bishMod
+        for square in rooks:
+            numAttacks += len(self.board.attacks(square)) * rookMod
+        for square in queens:
+            numAttacks += len(self.board.attacks(square)) * queenMod
+        for square in pawns:
+            numAttacks += len(self.board.attacks(square)) * pawnMod
+
+        return numAttacks
+
+
+
 class Agent:
     def __init__(self, board):
         self.board = board
@@ -18,9 +112,13 @@ class Agent:
             return (1 - colorIsNotWinner) * 999 + colorIsNotWinner * -999
 
     def getValueColor(self, color):
-        return len(self.board.pieces(1, color)) + (
-                    len(self.board.pieces(2, color)) + len(self.board.pieces(3, color))) * 3 + len(
-            self.board.pieces(4, color)) * 5 + len(self.board.pieces(5, color)) * 9
+
+        evalfunc = EvaluationFunctions(self.board)
+        return evalfunc.pushValuablePeices(color)
+
+        # return len(self.board.pieces(1, color)) + (
+        #             len(self.board.pieces(2, color)) + len(self.board.pieces(3, color))) * 3 + len(
+        #     self.board.pieces(4, color)) * 5 + len(self.board.pieces(5, color)) * 9
 
     def getColor(self):
         if self.board.turn:
