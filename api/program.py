@@ -173,10 +173,20 @@ class MiniMaxAlphaBetaAgent(Agent):
         return max, random.choice(best_moves)
 
 
+class QLearningAgent(Agent):
+    def __init__(self, board):
+        # if pieces > 26, early game
+        super().__init__(board)
+        EARLY = 26
+        # if 26 > pieces > 10, midgame
+        MID = 10
+
+        CENTER = [18, 19, 20, 21, 26, 27, 28, 29, 34, 35, 36, 37, 42, 43, 44, 45]
+        BOT_LEFT = [0, 1, 2, 3, 8, 9, 10, 11, 16, 17, 25, 25]
+
 class GeneralizedFeatures(Agent):
     def __init__(self, board):
         super().__init__(board)
-        self.color = self.board.turn
         # if > 26 pieces its early game
         self.early_cutoff = 26
         # if > 10 pieces its midgame
