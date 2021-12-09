@@ -10,4 +10,5 @@ i = 0
 w_0 = 0
 pos_moves = np.array(pos_moves)
 
-for i in range()
+for i in range(1):
+    pass
