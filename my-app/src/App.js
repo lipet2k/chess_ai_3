@@ -17,10 +17,6 @@ class App extends React.Component {
     this.initialize = this.initialize.bind(this);
     this.getPrevious = this.getPrevious.bind(this);
   }
-  
-  // componentDidMount() {
-  //   this.initialize;
-  // }
 
 
   async getNext() {
@@ -66,7 +62,7 @@ class App extends React.Component {
     this.renderSvg();
     this.renderValue();
   return (
-    
+
     <div className="App">
     <div className="ui">
       <Button color='primary' onClick={this.getNext}>Next</Button>

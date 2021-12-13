@@ -114,7 +114,7 @@ class Agent:
     def getValueColor(self, color):
 
         evalfunc = EvaluationFunctions(self.board)
-        return evalfunc.pushValuablePeices(color)
+        return evalfunc.pieceValues(color)
 
         # return len(self.board.pieces(1, color)) + (
         #             len(self.board.pieces(2, color)) + len(self.board.pieces(3, color))) * 3 + len(

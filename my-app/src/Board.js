@@ -22,6 +22,7 @@ class Board extends React.Component {
 
     componentDidMount() {
         this.setState({ board: "start",  value: 0});
+        console.log("Board Mounted")
     }
         // console.log(this.state.svg);
 
@@ -50,14 +51,6 @@ class Board extends React.Component {
         this.setState({board: data.board, value: data.value})
     }
 
-    // renderSvg() {
-    //     if (this.state.svg !== null) {
-    //     var container = document.getElementById("svg-container");
-    //     container.innerHTML = this.state.svg;
-    //     console.log("rendering")
-    //     }
-    // }
-
     renderValue() {
         var newContainer = document.getElementById("value-container");
         newContainer.innerHTML = this.state.value;
@@ -68,6 +61,8 @@ class Board extends React.Component {
         return (
             <div className="board">
                 <Chessboard className="board" position={this.state.board}/>
+
+                <h1>{this.state.value}</h1>
     
                 <div className="ui">
                     <Button color='primary' onClick={this.getNext}>Next</Button>

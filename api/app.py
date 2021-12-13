@@ -60,7 +60,7 @@ class Next(Resource):
     @marshal_with(board_fields)
     def get(self):
         try:
-            return play(3)
+            return play(2)
         except:
             abort(404, message="Fail to get next move.")
 
