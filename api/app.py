@@ -16,13 +16,13 @@ def renderBoard():
     return chess.svg.board(board, size=500)
 
 board_fields = {
-    'svg': fields.String,
+    'board': fields.String,
     'value': fields.Integer
 }
 
 class Board(object):
-    def __init__(self, svg, value):
-        self.svg = svg
+    def __init__(self, board, value):
+        self.board = board
         self.value = value
 
 def play(depth):
@@ -36,14 +36,14 @@ def play(depth):
             return "Black wins!"
     else:
         board.push(best_move)
-        return Board(renderBoard(), best_value)
+        return Board(board.fen(), best_value)
 
 class Initialize(Resource):
     @marshal_with(board_fields)
     def get(self):
         try:
             # thisIs = type(Board(Markup(renderBoard()), 0))
-            return Board(renderBoard(), 0)
+            return Board(board.fen(), 0)
         except:
             abort(404, message="Fail to initialize.")
 
@@ -52,7 +52,7 @@ class Reset(Resource):
     def get(self):
         try:
             board.reset()
-            return Board(renderBoard(), 0)
+            return Board(board.fen(), 0)
         except:
             abort(404, message="Fail to reset.")
 
@@ -69,7 +69,7 @@ class Previous(Resource):
     def get(self):
         try:
             board.pop()
-            return Board(Markup(renderBoard()), 0)
+            return Board(board.fen(), 0)
         except:
             abort(404, message="Fail to undo move.")            
 
