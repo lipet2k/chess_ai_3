@@ -66,15 +66,12 @@ class App extends React.Component {
     this.renderSvg();
     this.renderValue();
   return (
-
+    
     <div className="App">
     <div className="ui">
       <Button color='primary' onClick={this.getNext}>Next</Button>
       <Button color='primary' onClick={this.getPrevious}>Previous</Button>
       <Button color='danger' onClick={this.reset}>Reset</Button>
-      {/* <div className="value">
-        <h1>{this.state.value}</h1>
-      </div> */}
     </div>
     </div>
   );
