@@ -17,10 +17,6 @@ class App extends React.Component {
     this.initialize = this.initialize.bind(this);
     this.getPrevious = this.getPrevious.bind(this);
   }
-  
-  // componentDidMount() {
-  //   this.initialize;
-  // }
 
 
   async getNext() {
@@ -72,9 +68,6 @@ class App extends React.Component {
       <Button color='primary' onClick={this.getNext}>Next</Button>
       <Button color='primary' onClick={this.getPrevious}>Previous</Button>
       <Button color='danger' onClick={this.reset}>Reset</Button>
-      {/* <div className="value">
-        <h1>{this.state.value}</h1>
-      </div> */}
     </div>
     </div>
   );
