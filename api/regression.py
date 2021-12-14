@@ -22,7 +22,7 @@ class logistic_regression:
     def __init__(self):
         self.learning_rate = 0.1
 
-        tuple = file_to_arrays("first10kwhitewins.txt", "first10kblackwins.txt", 250)
+        tuple = file_to_arrays("first10kwhitewins.txt", "first10kblackwins.txt", 25)
         # one item = an array of feature values corresponding to one position
         self.features_set = tuple[1]
         # one item corresponds to one item in feature set
@@ -40,14 +40,15 @@ class logistic_regression:
         file = open("regressiondata.txt", "w")
         for iteration in range(self.iterations):
             self.update_weights()
-            if iteration % 100 == 0:
-                print("iteration " + str(iteration) + "\n" + str(self.weights))
-                file.write("iteration " + str(iteration) + "\n" + str(self.weights) + "\n")
+            if iteration % 10 == 0:
+                print("iteration " + str(iteration) + "\nbias term: " + str(self.bias_weight) + str(self.weights))
+                file.write("iteration " + str(iteration) + "\nbias term: " + str(self.bias_weight) + " " + str(self.weights) + "\n")
         file.close()
     # update all weights (not bias term) for data input
     def update_weights(self):
         new_weights = [0] * 775
         # for each weight
+        self.bias_weight = self.bias_weight + self.learning_rate * self.gradient(self.y_results, self.features_set, -1)
         for j in range(len(self.weights)):
             # new weight = old weight + learning rate * derivative of loss func
             new_weights[j] = self.weights[j] + self.learning_rate * self.gradient(self.y_results, self.features_set, j)
@@ -57,11 +58,16 @@ class logistic_regression:
     # features is set of collections of features
     # y[n] is the result of the position represented by features[n]
     def gradient(self, y, features, j):
+
         total = 0
         for i in range(len(y)):
             corresponding_features = features[i]
-            total += y[i] - self.total_sum(self.bias_weight, corresponding_features, self.weights) \
-                     * corresponding_features[j]
+            # if j is -1, get gradient for bias term
+            if j >= 0:
+                multiplier = corresponding_features[j]
+            elif j == -1:
+                multiplier = 1
+            total += y[i] - self.total_sum(self.bias_weight, corresponding_features, self.weights) * multiplier
         return total
 
     def total_sum(self, bias, features, weights):
