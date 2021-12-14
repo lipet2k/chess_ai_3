@@ -14,12 +14,12 @@ import Board from './Board';
 //   document.getElementById('root')
 // );
 
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <Navigation />
-//   </React.StrictMode>,
-//   document.getElementById('navbar')
-// );
+ReactDOM.render(
+  <React.StrictMode>
+    <Navigation />
+  </React.StrictMode>,
+  document.getElementById('navbar')
+);
 
 ReactDOM.render(
   <React.StrictMode>

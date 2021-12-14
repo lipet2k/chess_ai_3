@@ -2,6 +2,7 @@ import React from 'react';
 import Chessboard from "chessboardjsx";
 import $, { data } from 'jquery';
 import { Button, Progress} from 'reactstrap';
+import "./styles.css"
 
 class Board extends React.Component {
 
@@ -72,6 +73,14 @@ class Board extends React.Component {
     }
     
     render() {
+        let height_value = this.state.value;
+        let absolute = Math.abs(height_value);
+        if (Math.abs(height_value) > 200) {
+            height_value = height_value/absolute * 200
+        }
+        const progressbar = {
+            height: 200 - this.state.value,
+        };
 
         return (
             <div className="board" style={{ display: "flex", flexDirection: "row"}} >
@@ -86,11 +95,20 @@ class Board extends React.Component {
                     onDrop={this.makeHumanMove}/>
                 </div>
 
-                <div className="ui" style={{ order: 2, position: "relative", marginLeft: "400px"}}>
-                    <Button color='primary' onClick={this.getNext}>Next</Button>
-                    <Button color='primary' onClick={this.getPrevious}>Previous</Button>
-                    <Button color='danger' onClick={this.reset}>Reset</Button>
+                <div className="bar" style={{order: 2, marginLeft: "410px"}}>
+                    <div className="inner-bar" style={progressbar}>
+                        {this.state.value}
+                    </div>
+
                 </div>
+
+                <div className="ui" style={{ order: 3, position: "relative"}}>
+                    <Button className="clicky" color='primary' onClick={this.getNext}>Next</Button>
+                    <Button className="clicky" color='primary' onClick={this.getPrevious}>Previous</Button>
+                    <Button className="clicky" color='danger' onClick={this.reset}>Reset</Button>
+                </div>
+
+
 
 
 
