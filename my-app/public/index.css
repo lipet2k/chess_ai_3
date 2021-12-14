@@ -2,4 +2,6 @@
     background-color: whitesmoke;
     width: device-width;
     height: device-height;
+    border-radius: 5px;
+    margin: 5px;
 }

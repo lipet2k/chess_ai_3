@@ -7,7 +7,7 @@ class Navigation extends React.Component {
             <div className='nav'>
                 <Navbar color='dark' expand='md' dark>
                     <div className="container">
-                        <a href="#" className="navbar-brand">Chess Engine</a>
+                        <a href="#" className="navbar-brand">Dylan and Peter's Chess Engine</a>
 
                         <NavbarToggler onClick={function noRefCheck(){}} />
                         
