@@ -36,10 +36,13 @@ class logistic_regression:
         self.bias_weight = 1
 
     def regression(self):
+        file = open("regressiondata.txt", "w")
         for iteration in range(self.iterations):
             self.update_weights()
-        print(self.weights)
-
+            if iteration % 1000 == 0:
+                print("iteration " + str(iteration) + "\n" + str(self.weights))
+                file.write("iteration " + str(iteration) + "\n" + str(self.weights) + "\n")
+        file.close()
     # update all weights (not bias term) for data input
     def update_weights(self):
         new_weights = [0] * 775
@@ -47,8 +50,6 @@ class logistic_regression:
         for j in range(len(self.weights)):
             # new weight = old weight + learning rate * derivative of loss func
             new_weights[j] = self.weights[j] + self.learning_rate * self.gradient(self.y_results, self.features_set, j)
-
-        print("old: " + str(self.weights) + "\nnew: " + str(new_weights))
         self.weights = new_weights
 
     # y = set of results

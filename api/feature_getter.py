@@ -26,7 +26,7 @@ def file_to_arrays(winfilename, lossfilename):
         tokens = line.split(":")
         if "Game" in tokens[0]:
             gamecount = gamecount + 1
-            if gamecount == 11:
+            if gamecount == 10001:
                 break
         elif "1-0" == tokens[0]:
             results.append(1)
@@ -46,9 +46,10 @@ def file_to_arrays(winfilename, lossfilename):
             for i in range(len(values)):
                 values[i] = int(values[i])
             features_set = np.vstack([features_set, values])
-
+        if row % 1000 == 0:
+            print("just loaded 1000 positions")
     features_set = np.delete(features_set, 0, 0)
-    # print("got " + str(gamecount) + " games. " + str(len(results)) + " moves checked")
+    print("got " + str(gamecount) + " games. " + str(len(results)) + " moves checked")
     return (results, features_set)
 
 
