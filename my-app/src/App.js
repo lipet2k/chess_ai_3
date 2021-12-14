@@ -1,4 +1,3 @@
-import './App.css';
 import React, { Component } from 'react';
 import Title from './components/Header';
 import { Button } from 'reactstrap';

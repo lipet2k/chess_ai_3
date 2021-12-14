@@ -1,7 +1,7 @@
 import React from 'react';
 import Chessboard from "chessboardjsx";
 import $, { data } from 'jquery';
-import { Button } from 'reactstrap';
+import { Button, Progress} from 'reactstrap';
 
 class Board extends React.Component {
 
@@ -34,8 +34,8 @@ class Board extends React.Component {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            body: JSON.stringify(properties) // body data type must match "Content-Type" header
+            method: 'POST', 
+            body: JSON.stringify(properties)
           });
         const data = await response.json();
         this.setState({board: data.board, value: data.value});
@@ -74,18 +74,26 @@ class Board extends React.Component {
     render() {
 
         return (
-            <div className="board">
-                <Chessboard
-                position={this.state.board}
-                onDrop={this.makeHumanMove}/>
+            <div className="board" style={{ display: "flex", flexDirection: "row"}} >
+                <div className="chessboard" style={{ order: 1}}>
+                    <Chessboard
+                    width={400}
+                    position={this.state.board}
+                    boardStyle={{
+                        borderRadius: "5px",
+                        boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`
+                      }}
+                    onDrop={this.makeHumanMove}/>
+                </div>
 
-                <h1>{this.state.value}</h1>
-    
-                <div className="ui">
+                <div className="ui" style={{ order: 2, position: "relative", marginLeft: "400px"}}>
                     <Button color='primary' onClick={this.getNext}>Next</Button>
                     <Button color='primary' onClick={this.getPrevious}>Previous</Button>
                     <Button color='danger' onClick={this.reset}>Reset</Button>
                 </div>
+
+
+
             </div>
         );
     }
