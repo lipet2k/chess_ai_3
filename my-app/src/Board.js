@@ -1,6 +1,6 @@
 import React from 'react';
 import Chessboard from "chessboardjsx";
-import $ from 'jquery';
+import $, { data } from 'jquery';
 import { Button } from 'reactstrap';
 
 class Board extends React.Component {
@@ -13,6 +13,7 @@ class Board extends React.Component {
             value: 0,
         };
 
+        this.makeHumanMove = this.makeHumanMove.bind(this);
         this.getNext = this.getNext.bind(this);
         this.reset = this.reset.bind(this);
         this.initialize = this.initialize.bind(this);
@@ -22,10 +23,23 @@ class Board extends React.Component {
 
     componentDidMount() {
         this.setState({ board: "start",  value: 0});
-        console.log("Board Mounted")
+        console.log("Board Mounted");
     }
-        // console.log(this.state.svg);
 
+    async makeHumanMove(properties) {
+
+        const response = await fetch('/makeMove',
+        {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            body: JSON.stringify(properties) // body data type must match "Content-Type" header
+          });
+        const data = await response.json();
+        this.setState({board: data.board, value: data.value});
+    }
 
     async getNext() {
         const response = await fetch('/next');
@@ -58,9 +72,12 @@ class Board extends React.Component {
     }
     
     render() {
+
         return (
             <div className="board">
-                <Chessboard className="board" position={this.state.board}/>
+                <Chessboard
+                position={this.state.board}
+                onDrop={this.makeHumanMove}/>
 
                 <h1>{this.state.value}</h1>
     
