@@ -9,7 +9,7 @@ piece_type_offset[4] = 192
 piece_type_offset[5] = 256
 piece_type_offset[6] = 320
 
-def file_to_arrays(winfilename, lossfilename):
+def file_to_arrays(winfilename, lossfilename, totalgames):
     features_set = np.array([0] * 775)
     winfile = open(winfilename)
     winlines = winfile.readlines()
@@ -20,14 +20,15 @@ def file_to_arrays(winfilename, lossfilename):
 
     for row in range(len(winlines) + len(losslines)):
         if row % 2 == 0:
-            line = winlines[row]
+            line = winlines[int(row/2)]
         else:
-            line = losslines[row]
+            line = losslines[int(row/2)]
         tokens = line.split(":")
         if "Game" in tokens[0]:
-            gamecount = gamecount + 1
-            if gamecount == 10001:
+            if gamecount == totalgames + 1:
                 break
+            gamecount = gamecount + 1
+            print("games read: " + str(gamecount))
         elif "1-0" == tokens[0]:
             results.append(1)
             values = tokens[2]
@@ -47,9 +48,9 @@ def file_to_arrays(winfilename, lossfilename):
                 values[i] = int(values[i])
             features_set = np.vstack([features_set, values])
         if row % 1000 == 0:
-            print("just loaded 1000 positions")
+            print("now loaded " + str(row) + " positions" + str())
     features_set = np.delete(features_set, 0, 0)
-    print("got " + str(gamecount) + " games. " + str(len(results)) + " moves checked")
+    print("got " + str(gamecount) + " games. " + str(len(results)) + " positions loeaded")
     return (results, features_set)
 
 
@@ -163,7 +164,7 @@ def get_features(board):
 
     return features
 
-file_to_arrays("first10kwhitewins.txt", "first10kblackwins.txt")
+# file_to_arrays("first10kwhitewins.txt", "first10kblackwins.txt", 100)
 # get_first_10k_result("1-0", "first10kwhitewins.txt")
 # get_first_10k_result("0-1", "first10kblackwins.txt")
 # get_first_10k_result("1/2-1/2", "first10kdraws.txt")
