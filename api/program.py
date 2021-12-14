@@ -36,6 +36,9 @@ class EvaluationFunctions:
         numAttacks = self.numAttacksHelper(knights, bishops, rooks, queens, pawns, 1, 1, 1, 1, 1)
         return numAttacks
 
+    def pieceValuesAndMakeAttacks(self, color):
+        return self.numAttacks(color) * 0.2 + self.pieceValues(color)
+
     # return the push pieces evaluation function times some modifier plus the num attacks evaluation function
     def pushValuablePeicesAndMakeAttacks(self, color):
         knights = self.board.pieces(chess.KNIGHT, color)
@@ -114,7 +117,7 @@ class Agent:
     def getValueColor(self, color):
 
         evalfunc = EvaluationFunctions(self.board)
-        return evalfunc.pushValuablePeices(color)
+        return evalfunc.pieceValuesAndMakeAttacks(color)
 
         # return len(self.board.pieces(1, color)) + (
         #             len(self.board.pieces(2, color)) + len(self.board.pieces(3, color))) * 3 + len(
