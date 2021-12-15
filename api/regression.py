@@ -76,7 +76,8 @@ class logistic_regression:
 
         total = 0
         for i in range(len(y)):
-            corresponding_features = features[i].to_numpy()
+            corresponding_features = self.features_set[i]
+            # corresponding_features = corresponding_features.to_numpy()
             total += y[i] - self.total_sum(self.bias_weight, corresponding_features, self.weights)
         return total
 
@@ -92,8 +93,4 @@ class logistic_regression:
 
 
 tester = logistic_regression()
-
-fuck = tester.features_set[0]
-fuck = fuck.to_numpy()
-
-print(tester.total_sum(0, fuck, tester.weights))
+tester.derivative_loss(tester.y_results, tester.features_set)
