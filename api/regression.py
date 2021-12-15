@@ -27,8 +27,7 @@ class logistic_regression:
         self.y_results = self.y_results[1:]
 
 
-        make_rows = ['game', 'move#', 'features']
-        self.df_write = pd.DataFrame(index=make_rows)
+        self.df_write = pd.DataFrame()
 
         # tuple = file_to_arrays("first10kwhitewins.txt", "first10kblackwins.txt", 25)
         # one item = an array of feature values corresponding to one position
@@ -42,7 +41,7 @@ class logistic_regression:
 
         # self.total_y = self.df["results"]
 
-        self.iterations = len(self.y_results)
+        self.iterations = 2
 
         # one set of weights
         self.weights = np.array([1] * (768 + 4 + 1 + 2))
@@ -56,29 +55,36 @@ class logistic_regression:
             if iteration % 10 == 0:
                 print("iteration " + str(iteration) + "\nbias term: " + str(self.bias_weight) + str(self.weights))
                 self.df_write[iteration] = self.weights
-        self.df_write.to_excel("final_weights", sheet_name="Sheet1")
+        self.df_write.to_excel("final_weights.xlsx", sheet_name="Sheet1")
     # update all weights (not bias term) for data input
     def update_weights(self):
         new_weights = np.array([0] * 775)
         # for each weight
-        self.bias_weight = self.bias_weight + self.learning_rate * self.derivative_loss(self.y_results, self.features_set)
+        self.bias_weight = self.bias_weight + self.learning_rate * self.derivative_loss()
 
 
         for j in range(len(self.weights)):
             # new weight = old weight + learning rate * derivative of loss func
-            new_weights[j] = self.weights[j] + self.learning_rate * self.derivative_loss(self.y_results, self.features_set)*self.features_set
+            new_weights[j] = self.weights[j] + self.learning_rate * self.derivative_loss_second(j)
             # TODO: add x_j
         self.weights = new_weights
 
     # y = set of results
     # features is set of collections of features
     # y[n] is the result of the position represented by features[n]
-    def derivative_loss(self, y, features):
+    def derivative_loss(self):
 
         total = 0
-        for i in range(len(y)):
+        for i in range(len(self.y_results)):
             corresponding_features = self.features_set[i]
-            total += y[i] - self.total_sum(self.bias_weight, corresponding_features, self.weights)
+            total += self.y_results[i] - self.total_sum(self.bias_weight, corresponding_features, self.weights)
+        return total
+
+    def derivative_loss_second(self, j):
+        total = 0
+        for i in range(len(self.y_results)):
+            corresponding_features = self.features_set[i]
+            total += (self.y_results[i] - self.total_sum(self.bias_weight, corresponding_features, self.weights))*self.features_set[i][j]
         return total
 
     def total_sum(self, bias, features, weights):
@@ -93,4 +99,4 @@ class logistic_regression:
 
 
 tester = logistic_regression()
-tester.derivative_loss(tester.y_results, tester.features_set)
+tester.regression()
