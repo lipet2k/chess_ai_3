@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import numpy as np
 # import matplotlib.pyplot as plt
 import math
@@ -22,7 +24,7 @@ class logistic_regression:
         self.learning_rate = 0.1
 
         # pick minibatch size
-        self.batch_size = 10
+        self.batch_size = 50
 
         # get the data on the features for all the positions from the features fiel
         self.features_data = pd.read_excel("10_games_features.xlsx", "Sheet1")
@@ -33,6 +35,9 @@ class logistic_regression:
         # shuffle all the indices for our batches
         random.Random(1234).shuffle(self.all_indices)
 
+        # self.iterations = 2
+        self.iterations = len(self.all_indices)
+
         # new list is the indices of the first batch
         self.new_list = self.all_indices[:self.batch_size]
         # we remove these first X indices from all_indices
@@ -41,11 +46,8 @@ class logistic_regression:
         self.features_set = self.features_data[self.new_list]
         self.y_results = self.y_results_data[self.new_list]
 
-        self.df_write = pd.DataFrame()
-
-        # self.iterations = len(self.all_results)
-        self.iterations = len(self.all_indices)
-
+        self.df_write_weights = pd.DataFrame()
+        self.df_write_biases = pd.DataFrame()
 
         # one set of weights
         self.weights = np.array([0.0] * (768 + 4 + 1 + 2))
@@ -67,11 +69,15 @@ class logistic_regression:
             self.update_weights()
             self.update_batch()
 
-            if iteration % 1 == 0:
-                self.df_write[iteration] = self.weights
+            if iteration % 100 == 0:
+                self.df_write_weights[iteration] = self.weights
+                self.df_write_biases[iteration] = self.bias_weight
 
-        # print(self.bias_weight, self.weights)
-        self.df_write.to_excel("final_weights.xlsx", sheet_name="Sheet1")
+        # write last weight
+        self.df_write_weights[self.iterations] = self.weights
+        self.df_write_biases[self.iterations] = self.bias_weight
+        self.df_write_weights.to_excel("final_weights.xlsx", sheet_name="Sheet1")
+        self.df_write_biases.to_excel("final_biases.xlsx", sheet_name="Sheet1")
 
     # update all weights (not bias term) for data input
     def update_weights(self):
@@ -112,20 +118,21 @@ class logistic_regression:
         tester = tester_data()
         count = len(tester.all_indices)
         errorvals = [0]*count
+        df = pd.DataFrame()
+        # each data point in tester
         for i in tester.all_indices:
-            current = tester.features_set[i].to_numpy()
+            features = tester.features_set[i].to_numpy()
             true = tester.y_results_data[i]
-            errorvals[i] = self.test_helper(current, true)
-
-
-    def test_helper(self, features, true_value):
-        error = true_value - self.total_sum(features)
-        return error
-
+            prediction = self.total_sum(features)
+            errorvals[i] = abs(true-round(prediction))
+            df[i] = [true, prediction, round(prediction), abs(true-round(prediction))]
+        avg = sum(errorvals) / count
+        df[count] = avg
+        df.to_excel("final_error_values.xlsx", sheet_name="Sheet1")
+        print("average error:", avg)
 
 
 class tester_data:
-
     def __init__(self):
         # get the data on the features for all the positions from the features fiel
         self.features_data = pd.read_excel("test_games_features.xlsx", "Sheet1")
@@ -139,6 +146,9 @@ class tester_data:
         self.y_results = self.y_results_data[self.all_indices]
 
 
-
 main = logistic_regression()
+a = datetime.now()
 main.regression()
+b = datetime.now()
+print((b-a).total_seconds())
+main.test_against()
