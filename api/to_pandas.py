@@ -23,11 +23,20 @@ def get_first_10_result():
     df = pd.DataFrame(index=make_rows)
 
     current_game = chess.pgn.read_game(pgn)
+    
+    winner_color = 1
+
     while current_game is not None:
         current_game = chess.pgn.read_game(pgn)
         result = current_game.headers["Result"]
+        flag = -1
+        if result == "1-0":
+            flag = 1
+        elif result == "0-1":
+            flag = 0
         # if given result found then assess game
-        if (result == "1-0" or result =="0-1") and current_game.headers["Termination"] != "Abandoned":
+        if flag == winner_color and current_game.headers["Termination"] != "Abandoned":
+            winner_color = not winner_color
             count += 1
             # file.write("\nGame " + str(count) + "\n")
             board = current_game.board()
@@ -36,7 +45,7 @@ def get_first_10_result():
             for move in moves:
                 move_num += 1
                 board.push(move)
-                df["G" + str(count) + "M" + str(move_num)]= [move_num, pd.Series(get_features(board)), result, count]
+                df["G" + str(count) + "M" + str(move_num)]= [move_num, pd.Series(get_features(board)), flag, count]
                 # file.write(result + ":" + str(move_num) + ":" + str(get_features(board)) + "\n")
         if count == 10:
             df.to_excel("10_games.xlsx", sheet_name="Sheet1")
