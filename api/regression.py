@@ -24,7 +24,7 @@ class logistic_regression:
         self.learning_rate = 0.1
 
         # pick minibatch size
-        self.batch_size = 50
+        self.batch_size = 10
 
         # get the data on the features for all the positions from the features fiel
         self.features_data = pd.read_excel("10_games_features.xlsx", "Sheet1")
