@@ -1,3 +1,6 @@
 lichess_games_11_2021.pgn
 ignore.txt
 __pycache__/
+first10kblackwins.txt
+first10whitewins.txt
+api/10_games.xlsx

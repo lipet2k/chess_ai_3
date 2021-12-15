@@ -159,7 +159,7 @@ def get_features(board):
         if outcome.winner is not None:
             if outcome.winner:
                 features[773] = 1
-            elif not outcome.winner:
+            else:
                 features[774] = 1
 
     return features
