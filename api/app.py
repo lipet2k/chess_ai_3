@@ -7,13 +7,13 @@ import marshmallow
 import chess
 import chess.svg
 import math
-from program import MiniMaxAgent, MiniMaxAlphaBetaAgent
+from program import MiniMaxAgent, MiniMaxAlphaBetaAgent, LogisticRegression
 
 app = Flask(__name__)
 api = Api(app)
 
 board = chess.Board()
-agent = MiniMaxAlphaBetaAgent(board)
+agent = LogisticRegression(board)
 
 def renderBoard():
     return chess.svg.board(board, size=500)
@@ -40,7 +40,7 @@ class Board(object):
         self.value = value
 
 def play(depth):
-    best_action = agent.bestAction(depth, -math.inf, math.inf)
+    best_action = agent.bestAction()
     best_value = best_action[0]
     best_move = best_action[1]
     if best_move is None:

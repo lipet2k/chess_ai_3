@@ -1,6 +1,8 @@
 import math
 import chess
 import random
+import pandas as pd
+import numpy as np
 
 
 class EvaluationFunctions:
@@ -128,6 +130,102 @@ class Agent:
             return 1
         else:
             return -1
+
+class LogisticRegression(Agent):
+    def __init__(self, board):
+        super().__init__(board)
+        weights = pd.read_excel("final_weights_10_games_10_batch.xlsx", "Sheet1")
+        self.weights = weights[815]
+
+        bias = 0.605043
+        self.bias_weight = bias
+    def bestAction(self):
+        outcome = self.board.outcome()
+        if outcome != None:
+            return (self.getValue(outcome), None)
+        
+        if self.board.turn:
+            best_action = []
+            base = -math.inf
+            for move in self.board.legal_moves:
+                self.board.push(move)
+                features = self.get_features(self.board)
+                self.board.pop()
+                total_sum = self.total_sum(features)
+                if total_sum > base:
+                    base = total_sum
+                    best_action = [move]
+                elif total_sum == base:
+                    best_action.append(move)
+
+        else:
+            best_action = []
+            base = math.inf
+            for move in self.board.legal_moves:
+                self.board.push(move)
+                features = self.get_features(self.board)
+                self.board.pop()
+                total_sum = self.total_sum(features)
+                if total_sum < base:
+                    base = total_sum
+                    best_action = [move]
+                elif total_sum == base:
+                    best_action.append(move)
+        return base, random.choice(best_action)
+                
+
+    def total_sum(self, features):
+        return self.sigmoid(self.bias_weight + np.dot(features, self.weights))
+
+    def sigmoid(self, z):
+        return 1.0 / (1.0 + math.exp(-z))
+    
+    def get_features(self, board):
+
+        piece_type_offset = dict()
+        piece_type_offset[1] = 0
+        piece_type_offset[2] = 64
+        piece_type_offset[3] = 128
+        piece_type_offset[4] = 192
+        piece_type_offset[5] = 256
+        piece_type_offset[6] = 320
+        # white pawn 0-63, white knight, bishop, rook, queen, king, then black pawn, first is 384
+        # + 4 is castling rights + 1 is white turn/black turn + 2 is white checkmate / black checkmate
+        features = np.array([0] * (768 + 4 + 1 + 2))
+        mapping = board.piece_map()
+        for square, piece in mapping.items():
+            index = 0
+            if not piece.color:
+                index += 384
+            # offset by the piece type * 64
+            # add the corresponding square to the index
+            index += piece_type_offset[piece.piece_type] + square
+
+            features[index] = 1
+
+        # assign castling rights features
+        castling_rights = board.castling_rights
+        features[768] = castling_rights >> 0 & 1
+        features[769] = castling_rights >> 7 & 1
+        features[770] = castling_rights >> 56 & 1
+        features[771] = castling_rights >> 63 & 1
+
+        # if it is whites turn
+        if board.turn:
+            features[772] = 1
+
+        outcome = board.outcome()
+        if outcome is not None:
+            if outcome.winner is not None:
+                if outcome.winner:
+                    features[773] = 1
+                else:
+                    features[774] = 1
+
+        return features
+
+
+
 
 
 class MiniMaxAgent(Agent):
