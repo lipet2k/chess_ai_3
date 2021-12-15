@@ -18,12 +18,14 @@ def get_first_10_result():
     # file = open(filename, "w")
     count = 0
 
-    make_rows = ['Move#', "Features", "Result", "Game#"]
 
-    df = pd.DataFrame(index=make_rows)
+    df_features = pd.DataFrame()
+    df_winner = pd.DataFrame()
+    df_game_num = pd.DataFrame()
 
     current_game = chess.pgn.read_game(pgn)
-    
+
+    total = 0
     winner_color = 1
 
     while current_game is not None:
@@ -45,10 +47,15 @@ def get_first_10_result():
             for move in moves:
                 move_num += 1
                 board.push(move)
-                df["G" + str(count) + "M" + str(move_num)]= [move_num, pd.Series(get_features(board)), flag, count]
+                df_features[total]= get_features(board)
+                df_game_num[total] = [count]
+                df_winner[total] = [flag]
                 # file.write(result + ":" + str(move_num) + ":" + str(get_features(board)) + "\n")
+                total += 1
         if count == 10:
-            df.to_excel("10_games.xlsx", sheet_name="Sheet1")
+            df_features.to_excel("10_games_features.xlsx", sheet_name="Sheet1")
+            df_game_num.to_excel("10_games_game_num.xlsx", sheet_name="Sheet1")
+            df_winner.to_excel("10_games_winner.xlsx", sheet_name="Sheet1")
             break
 
 def get_features(board):
