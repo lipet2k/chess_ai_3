@@ -13,7 +13,7 @@ piece_type_offset[6] = 320
 
 # get the first 10k games of the desired result and the features of all moves- write them to the given filename
 def get_first_10_result():
-    pgn = open("../lichess_games_11_2021.pgn")
+    pgn = open("../master_games.pgn")
     # commenting this out so the file doesn't get rewritten
     # file = open(filename, "w")
     count = 0
@@ -37,7 +37,8 @@ def get_first_10_result():
         elif result == "0-1":
             flag = 0
         # if given result found then assess game
-        if flag == winner_color and current_game.headers["Termination"] != "Abandoned":
+        #  and current_game.headers["Termination"] != "Abandoned"
+        if flag == winner_color:
             winner_color = not winner_color
             count += 1
             # file.write("\nGame " + str(count) + "\n")
@@ -52,10 +53,10 @@ def get_first_10_result():
                 df_winner[total] = [flag]
                 # file.write(result + ":" + str(move_num) + ":" + str(get_features(board)) + "\n")
                 total += 1
-        if count == 10:
-            df_features.to_excel("10_games_features.xlsx", sheet_name="Sheet1")
-            df_game_num.to_excel("10_games_game_num.xlsx", sheet_name="Sheet1")
-            df_winner.to_excel("10_games_winner.xlsx", sheet_name="Sheet1")
+        if count == 20:
+            df_features.to_excel("test_games_features.xlsx", sheet_name="Sheet1")
+            df_game_num.to_excel("test_games_game_num.xlsx", sheet_name="Sheet1")
+            df_winner.to_excel("test_games_winner.xlsx", sheet_name="Sheet1")
             break
 
 def get_features(board):

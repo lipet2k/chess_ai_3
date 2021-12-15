@@ -21,11 +21,10 @@ class logistic_regression:
     def __init__(self):
         self.learning_rate = 0.1
 
-        self.batch_size = 5
+        self.batch_size = 10
 
-        features_data = pd.read_excel("10_games_features.xlsx", "Sheet1")
-        df_winner_data = pd.read_excel("10_games_winner.xlsx", "Sheet1")
-        # self.df_game_num_data = pd.read_excel("10_games_game_num.xlsx", "Sheet1")
+        features_data = pd.read_excel("20_games_features.xlsx", "Sheet1")
+        df_winner_data = pd.read_excel("20_games_winner.xlsx", "Sheet1")
         y_results_data = df_winner_data
         # .to_numpy()[0]
 
