@@ -13,9 +13,8 @@ piece_type_offset[6] = 320
 
 # get the first 10k games of the desired result and the features of all moves- write them to the given filename
 def get_first_10_result():
-    pgn = open("../master_games.pgn")
+    pgn = open("./lichess_games_11_2021.pgn")
     # commenting this out so the file doesn't get rewritten
-    # file = open(filename, "w")
     count = 0
 
 
@@ -28,20 +27,19 @@ def get_first_10_result():
     total = 0
     winner_color = 1
 
+
     while current_game is not None:
-        current_game = chess.pgn.read_game(pgn)
-        result = current_game.headers["Result"]
+        result = current_game.headers['Result']
         flag = -1
         if result == "1-0":
             flag = 1
         elif result == "0-1":
             flag = 0
         # if given result found then assess game
-        #  and current_game.headers["Termination"] != "Abandoned"
-        if flag == winner_color:
+        #
+        if flag == winner_color and current_game.headers["Termination"] != "Abandoned":
             winner_color = not winner_color
             count += 1
-            # file.write("\nGame " + str(count) + "\n")
             board = current_game.board()
             moves = current_game.mainline_moves()
             move_num = 0
@@ -51,13 +49,13 @@ def get_first_10_result():
                 df_features[total]= get_features(board)
                 df_game_num[total] = [count]
                 df_winner[total] = [flag]
-                # file.write(result + ":" + str(move_num) + ":" + str(get_features(board)) + "\n")
                 total += 1
-        if count == 20:
-            df_features.to_excel("test_games_features.xlsx", sheet_name="Sheet1")
-            df_game_num.to_excel("test_games_game_num.xlsx", sheet_name="Sheet1")
-            df_winner.to_excel("test_games_winner.xlsx", sheet_name="Sheet1")
+        if count == 50:
+            df_features.to_excel("50_games_features.xlsx", sheet_name="Sheet1")
+            df_game_num.to_excel("50_games_game_num.xlsx", sheet_name="Sheet1")
+            df_winner.to_excel("50_games_winner.xlsx", sheet_name="Sheet1")
             break
+        current_game = chess.pgn.read_game(pgn)
 
 def get_features(board):
     # white pawn 0-63, white knight, bishop, rook, queen, king, then black pawn, first is 384

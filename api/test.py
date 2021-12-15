@@ -7,3 +7,5 @@ row = df.iloc[1]
 row = np.array(row.to_numpy())
 row = row[1:]
 print(row)
+
+

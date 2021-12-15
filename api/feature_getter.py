@@ -81,7 +81,7 @@ def get_first_10k_result(desired_result, filename):
             break
     # file.close()
 
-
+# just a file to get data from our original pgn
 def count_pgn():
     pgn = open("./lichess_games_11_2021.pgn")
     data = dict()
@@ -126,6 +126,7 @@ def count_pgn():
     file.close()
 
 
+# given a chess board, outputs 775 binary features as described below
 def get_features(board):
     # white pawn 0-63, white knight, bishop, rook, queen, king, then black pawn, first is 384
     # + 4 is castling rights + 1 is white turn/black turn + 2 is white checkmate / black checkmate
