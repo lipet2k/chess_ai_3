@@ -24,6 +24,7 @@ class logistic_regression:
         df_winner = pd.read_excel("10_games_winner.xlsx", "Sheet1")
         self.df_game_num = pd.read_excel("10_games_game_num.xlsx", "Sheet1")
         self.y_results = df_winner.to_numpy()[0]
+        self.y_results = self.y_results[1:]
 
 
         make_rows = ['game', 'move#', 'features']
@@ -54,7 +55,7 @@ class logistic_regression:
             self.update_weights()
             if iteration % 10 == 0:
                 print("iteration " + str(iteration) + "\nbias term: " + str(self.bias_weight) + str(self.weights))
-                self.df_write[iteration] = [iteration, 0, pd.Series(self.weights)]
+                self.df_write[iteration] = self.weights
         self.df_write.to_excel("final_weights", sheet_name="Sheet1")
     # update all weights (not bias term) for data input
     def update_weights(self):
@@ -77,7 +78,6 @@ class logistic_regression:
         total = 0
         for i in range(len(y)):
             corresponding_features = self.features_set[i]
-            # corresponding_features = corresponding_features.to_numpy()
             total += y[i] - self.total_sum(self.bias_weight, corresponding_features, self.weights)
         return total
 
