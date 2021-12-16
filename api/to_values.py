@@ -44,8 +44,8 @@ def get_first_10_result():
                 df_winner[total] = [flag]
                 total += 1
         if count == 10:
-            df_features.to_excel("10_games_features.xlsx", sheet_name="Sheet1")
-            df_winner.to_excel("10_games_winner.xlsx", sheet_name="Sheet1")
+            df_features.to_excel("values_features.xlsx", sheet_name="Sheet1")
+            df_winner.to_excel("values_winner.xlsx", sheet_name="Sheet1")
             break
         current_game = chess.pgn.read_game(pgn)
 

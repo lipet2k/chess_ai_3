@@ -27,9 +27,9 @@ class logistic_regression:
         self.batch_size = 50
 
         # get the data on the features for all the positions from the features fiel
-        self.features_data = pd.read_excel("10_games_features.xlsx", "Sheet1")
+        self.features_data = pd.read_excel("values_features.xlsx", "Sheet1")
         # get the data on the results for all the corresponding positions
-        self.y_results_data = pd.read_excel("10_games_winner.xlsx", "Sheet1")
+        self.y_results_data = pd.read_excel("values_winner.xlsx", "Sheet1")
         # all indices is all indices of positions
         self.all_indices = self.y_results_data.columns.tolist()[1:]
         # shuffle all the indices for our batches
