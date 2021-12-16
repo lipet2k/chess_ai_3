@@ -135,10 +135,10 @@ class LogisticRegression(Agent):
     def __init__(self, board):
         super().__init__(board)
         weights = pd.read_excel("final_weights.xlsx", "Sheet1")
-        self.weights = weights[15939]
+        self.weights = weights[781]
 
         bias = pd.read_excel("final_biases.xlsx", "Sheet1")
-        self.bias_weight = bias[15939]
+        self.bias_weight = bias[781]
     def bestAction(self):
         outcome = self.board.outcome()
         if outcome != None:

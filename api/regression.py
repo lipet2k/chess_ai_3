@@ -27,9 +27,9 @@ class logistic_regression:
         self.batch_size = 50
 
         # get the data on the features for all the positions from the features fiel
-        self.features_data = pd.read_excel("20_games_features.xlsx", "Sheet1")
+        self.features_data = pd.read_excel("10_games_features.xlsx", "Sheet1")
         # get the data on the results for all the corresponding positions
-        self.y_results_data = pd.read_excel("20_games_winner.xlsx", "Sheet1")
+        self.y_results_data = pd.read_excel("10_games_winner.xlsx", "Sheet1")
         # all indices is all indices of positions
         self.all_indices = self.y_results_data.columns.tolist()[1:]
         # shuffle all the indices for our batches
@@ -70,6 +70,7 @@ class logistic_regression:
             self.update_batch()
 
             if iteration % 100 == 0:
+                print(iteration)
                 self.df_write_weights[iteration] = self.weights
                 self.df_write_biases[iteration] = self.bias_weight
 
@@ -151,4 +152,3 @@ a = datetime.now()
 main.regression()
 b = datetime.now()
 print((b-a).total_seconds())
-main.test_against()

@@ -24,8 +24,7 @@ def get_first_10_result():
 
     current_game = chess.pgn.read_game(pgn)
 
-    total_odd = 1
-    total_even = 2
+    total = 1
     winner_color = 1
 
 
@@ -39,10 +38,6 @@ def get_first_10_result():
         # if given result found then assess game
         #
         if flag == winner_color and current_game.headers["Termination"] != "Abandoned":
-            if flag:
-                total = total_odd
-            else:
-                total = total_even
 
             winner_color = not winner_color
             count += 1
@@ -54,24 +49,10 @@ def get_first_10_result():
                 board.push(move)
                 df_features[total]= get_features(board)
                 df_winner[total] = [flag]
-                total += 2
-
-            if flag:
-                total_odd = total
-            else:
-                total_even = total
-        if count == 1000:
-            if total_even > total_odd + 1:
-                df_features = df_features.drop([x for x in range(total_odd+1, total_even) if x%2 == 0], axis=1)
-                df_winner = df_winner.drop([x for x in range(total_odd+1, total_even) if x%2 == 0], axis=1)
-            elif total_even < total_odd - 1:
-                df_features = df_features.drop([x for x in range(total_even+1, total_odd) if x%2 == 1], axis=1)
-                df_winner = df_winner.drop([x for x in range(total_even+1, total_odd) if x%2 == 1], axis=1)
-
-            df_features.sort_index(axis=1, inplace=True)
-            df_winner.sort_index(axis=1, inplace=True)
-            df_features.to_excel("1000_games_features.xlsx", sheet_name="Sheet1")
-            df_winner.to_excel("1000_games_winner.xlsx", sheet_name="Sheet1")
+                total += 1
+        if count == 10:
+            df_features.to_excel("10_games_features.xlsx", sheet_name="Sheet1")
+            df_winner.to_excel("10_games_winner.xlsx", sheet_name="Sheet1")
             break
         current_game = chess.pgn.read_game(pgn)
 
