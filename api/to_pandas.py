@@ -52,11 +52,11 @@ def get_first_10_result():
                 df_winner[total] = [flag]
                 total += 2
             total = temp+1
-        if count == 50:
+        if count == 1000:
             df_features.sort_index(axis=1, inplace=True)
             df_winner.sort_index(axis=1, inplace=True)
-            df_features.to_excel("50_games_features.xlsx", sheet_name="Sheet1")
-            df_winner.to_excel("50_games_winner.xlsx", sheet_name="Sheet1")
+            df_features.to_excel("1000_games_features.xlsx", sheet_name="Sheet1")
+            df_winner.to_excel("1000_games_winner.xlsx", sheet_name="Sheet1")
             break
         current_game = chess.pgn.read_game(pgn)
 
