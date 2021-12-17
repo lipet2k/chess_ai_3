@@ -60,9 +60,9 @@ def get_features(board):
             index += 6
         # offset by the piece type * 64
         # add the corresponding square to the index
-        index += piece.piece_type
+        index += piece.piece_type - 1
 
-        features[index] = 1
+        features[index] = features[index] + 1
 
     
 
