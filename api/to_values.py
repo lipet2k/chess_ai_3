@@ -52,7 +52,7 @@ def get_first_10_result():
 def get_features(board):
     # white pawn 0-63, white knight, bishop, rook, queen, king, then black pawn, first is 384
     # + 4 is castling rights + 1 is white turn/black turn + 2 is white checkmate / black checkmate
-    features = np.array([0] * 14)
+    features = np.array([0] * 15)
     mapping = board.piece_map()
     for square, piece in mapping.items():
         index = 0
@@ -76,7 +76,7 @@ def get_features(board):
             if outcome.winner:
                 features[13] = 1
             else:
-                features[13] = 1
+                features[14] = 1
 
     return features
 get_first_10_result()

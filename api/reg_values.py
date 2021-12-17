@@ -50,7 +50,7 @@ class logistic_regression:
         self.df_write_biases = pd.DataFrame()
 
         # one set of weights
-        self.weights = np.array([0.0] * 14)
+        self.weights = np.array([0.0] * 15)
 
         self.bias_weight = 1.0
 
@@ -82,7 +82,7 @@ class logistic_regression:
 
     # update all weights (not bias term) for data input
     def update_weights(self):
-        new_weights = np.array([0.0] * 14)
+        new_weights = np.array([0.0] * 15)
         # for each weight
         self.bias_weight = self.bias_weight + self.learning_rate * self.derivative_loss()
 
