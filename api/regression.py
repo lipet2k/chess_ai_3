@@ -69,7 +69,7 @@ class logistic_regression:
             self.update_weights()
             self.update_batch()
 
-            if iteration % 100 == 0:
+            if iteration % 50 == 0:
                 print(iteration)
                 self.df_write_weights[iteration] = self.weights
                 self.df_write_biases[iteration] = self.bias_weight

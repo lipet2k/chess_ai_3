@@ -134,11 +134,15 @@ class Agent:
 class LogisticRegression(Agent):
     def __init__(self, board):
         super().__init__(board)
-        weights = pd.read_excel("final_weights.xlsx", "Sheet1")
-        self.weights = weights[781]
+        weights_position = pd.read_excel("final_weights.xlsx", "Sheet1")
+        weights_values = pd.read_excel("200_value_weights.xlsx", "Sheet1")
+        self.weights_position = weights_position[15939]
+        self.weights_values = weights_values[15939]
 
-        bias = pd.read_excel("final_biases.xlsx", "Sheet1")
-        self.bias_weight = bias[781]
+        bias_position = pd.read_excel("final_biases.xlsx", "Sheet1")
+        bias_values = pd.read_excel("200_value_biases.xlsx", "Sheet1")
+        self.bias_weight_position = bias_position[15939]
+        self.bias_weight_values = bias_values[15939]
     def bestAction(self):
         outcome = self.board.outcome()
         if outcome != None:
@@ -149,9 +153,10 @@ class LogisticRegression(Agent):
             base = -math.inf
             for move in self.board.legal_moves:
                 self.board.push(move)
-                features = self.get_features(self.board)
+                features_values = self.get_features_values(self.board)
+                features_position = self.get_features_position(self.board)
                 self.board.pop()
-                total_sum = self.total_sum(features)
+                total_sum = 0.7*self.total_sum_values(features_values) + 0.3*self.total_sum_position(features_position)
                 if total_sum > base:
                     base = total_sum
                     best_action = [move]
@@ -163,24 +168,29 @@ class LogisticRegression(Agent):
             base = math.inf
             for move in self.board.legal_moves:
                 self.board.push(move)
-                features = self.get_features(self.board)
+                features_values = self.get_features_values(self.board)
+                features_position = self.get_features_position(self.board)
                 self.board.pop()
-                total_sum = self.total_sum(features)
+                total_sum = 0.7*self.total_sum_values(features_values) + 0.3*self.total_sum_position(features_position)
                 if total_sum < base:
                     base = total_sum
                     best_action = [move]
                 elif total_sum == base:
                     best_action.append(move)
+        print(base)
         return base, random.choice(best_action)
                 
 
-    def total_sum(self, features):
-        return self.sigmoid(self.bias_weight + np.dot(features, self.weights))
+    def total_sum_position(self, features):
+        return self.sigmoid(self.bias_weight_position + np.dot(features, self.weights_position))
+    
+    def total_sum_values(self, features):
+        return self.sigmoid(self.bias_weight_values + np.dot(features, self.weights_values ))
 
     def sigmoid(self, z):
         return 1.0 / (1.0 + math.exp(-z))
     
-    def get_features(self, board):
+    def get_features_position(self, board):
 
         piece_type_offset = dict()
         piece_type_offset[1] = 0
@@ -221,6 +231,35 @@ class LogisticRegression(Agent):
                     features[773] = 1
                 else:
                     features[774] = 1
+
+        return features
+
+    def get_features_values(self, board):
+        # white pawn 0-63, white knight, bishop, rook, queen, king, then black pawn, first is 384
+        # + 4 is castling rights + 1 is white turn/black turn + 2 is white checkmate / black checkmate
+        features = np.array([0] * 15)
+        mapping = board.piece_map()
+        for square, piece in mapping.items():
+            index = 0
+            if not piece.color:
+                index += 6
+            # offset by the piece type * 64
+            # add the corresponding square to the index
+            index += piece.piece_type - 1
+
+            features[index] = features[index] + 1
+
+        # if it is whites turn
+        if board.turn:
+            features[12] = 1
+
+        outcome = board.outcome()
+        if outcome is not None:
+            if outcome.winner is not None:
+                if outcome.winner:
+                    features[13] = 1
+                else:
+                    features[14] = 1
 
         return features
 

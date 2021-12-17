@@ -27,9 +27,9 @@ class logistic_regression:
         self.batch_size = 50
 
         # get the data on the features for all the positions from the features fiel
-        self.features_data = pd.read_excel("values_features.xlsx", "Sheet1")
+        self.features_data = pd.read_excel("200_values_features.xlsx", "Sheet1")
         # get the data on the results for all the corresponding positions
-        self.y_results_data = pd.read_excel("values_winner.xlsx", "Sheet1")
+        self.y_results_data = pd.read_excel("200_values_winner.xlsx", "Sheet1")
         # all indices is all indices of positions
         self.all_indices = self.y_results_data.columns.tolist()[1:]
         # shuffle all the indices for our batches
@@ -69,7 +69,7 @@ class logistic_regression:
             self.update_weights()
             self.update_batch()
 
-            if iteration % 10 == 0:
+            if iteration % 50 == 0:
                 print(iteration)
                 self.df_write_weights[iteration] = self.weights
                 self.df_write_biases[iteration] = self.bias_weight
@@ -77,8 +77,8 @@ class logistic_regression:
         # write last weight
         self.df_write_weights[self.iterations] = self.weights
         self.df_write_biases[self.iterations] = self.bias_weight
-        self.df_write_weights.to_excel("value_weights.xlsx", sheet_name="Sheet1")
-        self.df_write_biases.to_excel("value_biases.xlsx", sheet_name="Sheet1")
+        self.df_write_weights.to_excel("200_value_weights.xlsx", sheet_name="Sheet1")
+        self.df_write_biases.to_excel("200_value_biases.xlsx", sheet_name="Sheet1")
 
     # update all weights (not bias term) for data input
     def update_weights(self):
