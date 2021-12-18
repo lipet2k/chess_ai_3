@@ -119,7 +119,8 @@ class Agent:
     def getValueColor(self, color):
 
         evalfunc = EvaluationFunctions(self.board)
-        return evalfunc.pieceValuesAndMakeAttacks(color)
+        # return evalfunc.numAttacks(color)
+        return evalfunc.pieceValues(color)
 
         # return len(self.board.pieces(1, color)) + (
         #             len(self.board.pieces(2, color)) + len(self.board.pieces(3, color))) * 3 + len(
@@ -136,12 +137,12 @@ class LogisticRegression(Agent):
         super().__init__(board)
         weights_position = pd.read_excel("final_weights.xlsx", "Sheet1")
         weights_values = pd.read_excel("200_value_weights.xlsx", "Sheet1")
-        self.weights_position = weights_position[15939]
+        self.weights_position = weights_position[8185]
         self.weights_values = weights_values[15939]
 
         bias_position = pd.read_excel("final_biases.xlsx", "Sheet1")
         bias_values = pd.read_excel("200_value_biases.xlsx", "Sheet1")
-        self.bias_weight_position = bias_position[15939]
+        self.bias_weight_position = bias_position[8185]
         self.bias_weight_values = bias_values[15939]
     def bestAction(self):
         outcome = self.board.outcome()
@@ -156,7 +157,7 @@ class LogisticRegression(Agent):
                 features_values = self.get_features_values(self.board)
                 features_position = self.get_features_position(self.board)
                 self.board.pop()
-                total_sum = 0.7*self.total_sum_values(features_values) + 0.3*self.total_sum_position(features_position)
+                total_sum = 0*self.total_sum_values(features_values) + self.total_sum_position(features_position)
                 if total_sum > base:
                     base = total_sum
                     best_action = [move]
@@ -171,7 +172,7 @@ class LogisticRegression(Agent):
                 features_values = self.get_features_values(self.board)
                 features_position = self.get_features_position(self.board)
                 self.board.pop()
-                total_sum = 0.7*self.total_sum_values(features_values) + 0.3*self.total_sum_position(features_position)
+                total_sum = 0*self.total_sum_values(features_values) + self.total_sum_position(features_position)
                 if total_sum < base:
                     base = total_sum
                     best_action = [move]
